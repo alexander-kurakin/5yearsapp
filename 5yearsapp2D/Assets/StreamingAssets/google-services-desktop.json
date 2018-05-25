@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "583640756027",
+    "firebase_url": "https://yearsapp.firebaseio.com",
+    "project_id": "yearsapp",
+    "storage_bucket": "yearsapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583640756027:android:1e22a64bd8081fcf",
+        "android_client_info": {
+          "package_name": "com.firebase.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583640756027-77pvvilc52p970jl6nk3d2lr2h225e7c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEyXJGr0CMvUMPEqSQy5Jra7yGqGkjT1M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

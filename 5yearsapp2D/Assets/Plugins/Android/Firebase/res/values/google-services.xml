@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id" xmlns:tools="http://schemas.android.com/tools">
+  <string name="firebase_database_url" translatable="false">https://yearsapp.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">583640756027</string>
+  <string name="google_storage_bucket" translatable="false">yearsapp.appspot.com</string>
+  <string name="project_id" translatable="false">yearsapp</string>
+  <string name="google_api_key" translatable="false">AIzaSyBEyXJGr0CMvUMPEqSQy5Jra7yGqGkjT1M</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBEyXJGr0CMvUMPEqSQy5Jra7yGqGkjT1M</string>
+  <string name="google_app_id" translatable="false">1:583640756027:android:1e22a64bd8081fcf</string>
+  <string name="default_web_client_id" translatable="false">583640756027-77pvvilc52p970jl6nk3d2lr2h225e7c.apps.googleusercontent.com</string>
+</resources>
