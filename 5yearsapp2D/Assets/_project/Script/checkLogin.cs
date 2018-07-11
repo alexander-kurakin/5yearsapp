@@ -19,15 +19,25 @@ public class checkLogin : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+        PlayerPrefs.SetInt("isAuthenticated", 0);
+
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://yearsapp.firebaseio.com/");
 
-        outText.text = "Initialized";
-        mDatabase = FirebaseDatabase.DefaultInstance.RootReference;
+        outText.text = "Initially set";
+        mDatabase = FirebaseDatabase.DefaultInstance.GetReference("Users");
     }
 
-    public void WriteNewUser(string name, string password)
+    public void WriteNewUser(string name, string password, int age, string sex)
     {
-        mDatabase.Child("Users").Child(name).SetValueAsync(password);        
+      
+            User user = new User(name, password, age, sex);
+            string json = JsonUtility.ToJson(user);
+
+        DatabaseReference newUserID = mDatabase.Push();
+
+        newUserID.SetRawJsonValueAsync(json);
+
     }
 
     public void TestLogin()
@@ -36,7 +46,7 @@ public class checkLogin : MonoBehaviour {
         {
             FirebaseDatabase.DefaultInstance
             .GetReference("Users")
-            .OrderByKey()
+            .OrderByChild("username")
             .EqualTo(LoginF.text)
             .GetValueAsync().ContinueWith(task =>
             {
@@ -48,19 +58,20 @@ public class checkLogin : MonoBehaviour {
                 {
                     DataSnapshot snapshot = task.Result;
 
-                    foreach (var childSnap in snapshot.Children)
-                    {
-                        var q = childSnap.Value.ToString();
-                        Pass = q.ToString();
-                    }
+                    outText.text = outText.text + " Got a snapshot";
+                    //to-doo too-doo
+                    Pass = snapshot.Child("password").Value.ToString();
 
-                    if (snapshot.HasChild(LoginF.text))
+                    outText.text = outText.text + " Pass:" + Pass;
+                    outText.text = outText.text + " Pass_entered:" + PassF.text;
+
+                    if (snapshot.Child("username").Equals(LoginF.text))
                     {
                         if (Pass == PassF.text)
                         {
                             outText.text = outText.text + " Loading main scene!";
                               PlayerPrefs.SetInt("isAuthenticated", 1);
-                              SceneManager.LoadScene("main");
+                              //SceneManager.LoadScene("main");
                         }
                         else
                         {
@@ -69,10 +80,10 @@ public class checkLogin : MonoBehaviour {
                     }
                     else
                     {
-                        WriteNewUser(LoginF.text, PassF.text);
-                        outText.text = "Created New User!";
+                        //WriteNewUser(LoginF.text, PassF.text, 28, "M");
+                        outText.text = outText.text + " Wanted to create a New User!";
                         PlayerPrefs.SetInt("isAuthenticated", 1);
-                        SceneManager.LoadScene("main");
+                        //SceneManager.LoadScene("main");
                     }
                 };
             });
