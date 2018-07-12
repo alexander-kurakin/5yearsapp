@@ -137,7 +137,7 @@ public class checkLogin : MonoBehaviour {
     public void AssignQuestionsToDates()
     {
         int minNumber = 1;
-        int maxNumber = 1827;
+        int maxNumber = 333   ;
 
         List<int> possibleNumbers = new List<int>();
         for (int i = minNumber; i <= maxNumber; i++)
@@ -147,14 +147,16 @@ public class checkLogin : MonoBehaviour {
 
         for (int i = 0; i < maxNumber; i++)
         {
-            //Generate random number
             int randomNumber = Random.Range(1, possibleNumbers.Count);
-
-            //Use random number as index for the possible number list
+            
             resultList.Add(possibleNumbers[randomNumber]);
 
-            //Remove the chosen result number from possible numbers list
             possibleNumbers.RemoveAt(randomNumber);
+        }
+
+        for (int i = 0; i < resultList.Count; i++)
+        {
+            Debug.Log("Index: "+i + ", value: "+ resultList[i]);
         }
 
     }
