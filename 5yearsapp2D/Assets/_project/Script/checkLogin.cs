@@ -13,6 +13,7 @@ public class checkLogin : MonoBehaviour {
     public Text PassF;
     private DatabaseReference mDatabase;
     private string Pass;
+    private string Login;
     public Button bttn;
     public Text outText;
 
@@ -24,7 +25,7 @@ public class checkLogin : MonoBehaviour {
 
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://yearsapp.firebaseio.com/");
 
-        outText.text = "Initially set";
+        outText.text = "Connection established!";
         mDatabase = FirebaseDatabase.DefaultInstance.GetReference("Users");
     }
 
@@ -58,32 +59,30 @@ public class checkLogin : MonoBehaviour {
                 {
                     DataSnapshot snapshot = task.Result;
 
-                    outText.text = outText.text + " Got a snapshot";
-                    //to-doo too-doo
-                    Pass = snapshot.Child("password").Value.ToString();
+                    foreach (DataSnapshot user in snapshot.Children)
+                    {
+                        IDictionary dictUser = (IDictionary)user.Value;
+                        Pass = dictUser["password"].ToString();
+                        Login = dictUser["username"].ToString();                    }
 
-                    outText.text = outText.text + " Pass:" + Pass;
-                    outText.text = outText.text + " Pass_entered:" + PassF.text;
-
-                    if (snapshot.Child("username").Equals(LoginF.text))
+                    if (Login == LoginF.text)
                     {
                         if (Pass == PassF.text)
                         {
-                            outText.text = outText.text + " Loading main scene!";
+                            outText.text = outText.text + " Passwords match! Well Done";
                               PlayerPrefs.SetInt("isAuthenticated", 1);
-                              //SceneManager.LoadScene("main");
+                              SceneManager.LoadScene("main");
                         }
                         else
                         {
-                            outText.text = outText.text + " Password is invalid!";
+                            outText.text = outText.text + " Password is invalid, please retype";
                         };
                     }
                     else
                     {
-                        //WriteNewUser(LoginF.text, PassF.text, 28, "M");
-                        outText.text = outText.text + " Wanted to create a New User!";
+                        WriteNewUser(LoginF.text, PassF.text, 28, "M");
                         PlayerPrefs.SetInt("isAuthenticated", 1);
-                        //SceneManager.LoadScene("main");
+                        SceneManager.LoadScene("main");
                     }
                 };
             });
