@@ -147,7 +147,7 @@ public class checkLogin : MonoBehaviour {
 
         for (int i = 0; i < maxNumber; i++)
         {
-            int randomNumber = Random.Range(1, possibleNumbers.Count);
+            int randomNumber = Random.Range(1, possibleNumbers.Count)-1;
             
             resultList.Add(possibleNumbers[randomNumber]);
 
@@ -156,7 +156,7 @@ public class checkLogin : MonoBehaviour {
 
         for (int i = 0; i < resultList.Count; i++)
         {
-            Debug.Log("Index: "+i + ", value: "+ resultList[i]);
+            Debug.Log("Index: " + (i+1) + ", value: "+ resultList[i]);
         }
 
     }
