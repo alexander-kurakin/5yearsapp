@@ -131,10 +131,33 @@ public class checkLogin : MonoBehaviour {
                 i++;
                 mDatabase2.Child(UserID).Child(i.ToString()).SetValueAsync(day.ToString("ddMMyyyy"));
             }
-           
-        
-
 
     }
+
+    public void AssignQuestionsToDates()
+    {
+        int minNumber = 1;
+        int maxNumber = 1827;
+
+        List<int> possibleNumbers = new List<int>();
+        for (int i = minNumber; i <= maxNumber; i++)
+            possibleNumbers.Add(i);
+
+        List<int> resultList = new List<int>();
+
+        for (int i = 0; i < maxNumber; i++)
+        {
+            //Generate random number
+            int randomNumber = Random.Range(1, possibleNumbers.Count);
+
+            //Use random number as index for the possible number list
+            resultList.Add(possibleNumbers[randomNumber]);
+
+            //Remove the chosen result number from possible numbers list
+            possibleNumbers.RemoveAt(randomNumber);
+        }
+
+    }
+
 
 }
