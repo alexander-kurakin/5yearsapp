@@ -11,12 +11,13 @@ public class checkLogin : MonoBehaviour {
 
     public Text LoginF;
     public Text PassF;
-    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabase, mDatabase2;
     private string Pass;
     private string Login;
     public Button bttn;
     public Text outText;
     private string existingPerson, newPerson;
+    private string UserID;
 
 
 	// Use this for initialization
@@ -36,8 +37,6 @@ public class checkLogin : MonoBehaviour {
 
         DatabaseReference newUserID = mDatabase.Push();
         newPerson = newUserID.Key;
-
-        Debug.Log("New user created:" + newPerson);
 
         PlayerPrefs.SetString("userID", newPerson);
 
@@ -69,7 +68,6 @@ public class checkLogin : MonoBehaviour {
                         Pass = dictUser["password"].ToString();
                         Login = dictUser["username"].ToString();
                         existingPerson = user.Key;
-                        Debug.Log("Existing user found:" + existingPerson);
 
                     }
 
@@ -90,6 +88,7 @@ public class checkLogin : MonoBehaviour {
                     else
                     {
                         WriteNewUser(LoginF.text, PassF.text, 28, "M");
+                        FillDates();
                         PlayerPrefs.SetInt("isAuthenticated", 1);
                         SceneManager.LoadScene("main");
                     }
@@ -113,5 +112,29 @@ public class checkLogin : MonoBehaviour {
         }
     }
 
+    public IEnumerable<System.DateTime> EachDay(System.DateTime from, System.DateTime thru)
+    {
+        for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
+            yield return day;
+    }
+
+    public void FillDates()
+    {
+        
+            mDatabase2 = FirebaseDatabase.DefaultInstance.GetReference("UserDates");
+            UserID = PlayerPrefs.GetString("userID");
+            mDatabase2.SetValueAsync(UserID);
+
+            int i = 0;
+            foreach (System.DateTime day in EachDay(System.DateTime.Now, System.DateTime.Now.AddYears(5)))
+            {
+                i++;
+                mDatabase2.Child(UserID).Child(i.ToString()).SetValueAsync(day.ToString("ddMMyyyy"));
+            }
+           
+        
+
+
+    }
 
 }
