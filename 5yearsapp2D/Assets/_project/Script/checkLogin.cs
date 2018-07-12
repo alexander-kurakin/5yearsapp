@@ -16,12 +16,11 @@ public class checkLogin : MonoBehaviour {
     private string Login;
     public Button bttn;
     public Text outText;
+    private string existingPerson, newPerson;
 
 
 	// Use this for initialization
 	void Start () {
-
-        PlayerPrefs.SetInt("isAuthenticated", 0);
 
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://yearsapp.firebaseio.com/");
 
@@ -36,6 +35,11 @@ public class checkLogin : MonoBehaviour {
             string json = JsonUtility.ToJson(user);
 
         DatabaseReference newUserID = mDatabase.Push();
+        newPerson = newUserID.Key;
+
+        Debug.Log("New user created:" + newPerson);
+
+        PlayerPrefs.SetString("userID", newPerson);
 
         newUserID.SetRawJsonValueAsync(json);
 
@@ -63,7 +67,11 @@ public class checkLogin : MonoBehaviour {
                     {
                         IDictionary dictUser = (IDictionary)user.Value;
                         Pass = dictUser["password"].ToString();
-                        Login = dictUser["username"].ToString();                    }
+                        Login = dictUser["username"].ToString();
+                        existingPerson = user.Key;
+                        Debug.Log("Existing user found:" + existingPerson);
+
+                    }
 
                     if (Login == LoginF.text)
                     {
@@ -71,6 +79,7 @@ public class checkLogin : MonoBehaviour {
                         {
                             outText.text = outText.text + " Passwords match! Well Done";
                               PlayerPrefs.SetInt("isAuthenticated", 1);
+                              PlayerPrefs.SetString("userID", existingPerson);
                               SceneManager.LoadScene("main");
                         }
                         else
