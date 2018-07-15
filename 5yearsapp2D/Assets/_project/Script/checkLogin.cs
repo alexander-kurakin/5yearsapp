@@ -11,13 +11,13 @@ public class checkLogin : MonoBehaviour {
 
     public Text LoginF;
     public Text PassF;
-    private DatabaseReference mDatabase, mDatabase2;
+    private DatabaseReference mDatabase, mDatabase2, mDatabase3;
     private string Pass;
     private string Login;
     public Button bttn;
     public Text outText;
     private string existingPerson, newPerson;
-    private string UserID;
+    private string UserID, qText;
 
 
 	// Use this for initialization
@@ -89,6 +89,7 @@ public class checkLogin : MonoBehaviour {
                     {
                         WriteNewUser(LoginF.text, PassF.text, 28, "M");
                         FillDates();
+                        AssignQuestionsToDates();
                         PlayerPrefs.SetInt("isAuthenticated", 1);
                         SceneManager.LoadScene("main");
                     }
@@ -136,8 +137,12 @@ public class checkLogin : MonoBehaviour {
 
     public void AssignQuestionsToDates()
     {
+        mDatabase3 = FirebaseDatabase.DefaultInstance.GetReference("UserDatesQuestions");
+        UserID = PlayerPrefs.GetString("userID");
+        mDatabase3.SetValueAsync(UserID);
+
         int minNumber = 1;
-        int maxNumber = 333   ;
+        int maxNumber = 355;
 
         List<int> possibleNumbers = new List<int>();
         for (int i = minNumber; i <= maxNumber; i++)
@@ -156,10 +161,35 @@ public class checkLogin : MonoBehaviour {
 
         for (int i = 0; i < resultList.Count; i++)
         {
-            Debug.Log("Index: " + (i+1) + ", value: "+ resultList[i]);
+          //  mDatabase3.Child(UserID).Child(i.ToString()).SetValueAsync(day.ToString("ddMMyyyy"));
         }
 
     }
 
+    public string GetQuestion(int questionID)
+    {
+        FirebaseDatabase.DefaultInstance
+       .GetReference("Questions")
+       .OrderByKey()
+       .EqualTo(questionID)
+       .ValueChanged += (object sender2, ValueChangedEventArgs e2) =>
+       {
+           if (e2.DatabaseError != null)
+           {
+               Debug.Log(e2.DatabaseError.Message);
+           }
 
-}
+           if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0)
+           {
+               foreach (var childSnapshot in e2.Snapshot.Children)
+               {
+                   var q = childSnapshot.Value.ToString();
+                   qText = q.ToString();
+               }
+           }
+       };
+
+        return qText;
+    }
+
+    }
