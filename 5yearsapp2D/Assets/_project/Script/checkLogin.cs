@@ -200,30 +200,4 @@ public class checkLogin : MonoBehaviour {
 
     }
 
-    public string GetQuestion(int questionID)
-    {
-        FirebaseDatabase.DefaultInstance
-       .GetReference("Questions")
-       .OrderByKey()
-       .EqualTo(questionID)
-       .ValueChanged += (object sender2, ValueChangedEventArgs e2) =>
-       {
-           if (e2.DatabaseError != null)
-           {
-               Debug.Log(e2.DatabaseError.Message);
-           }
-
-           if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0)
-           {
-               foreach (var childSnapshot in e2.Snapshot.Children)
-               {
-                   var q = childSnapshot.Value.ToString();
-                   qText = q.ToString();
-               }
-           }
-       };
-
-        return qText;
-    }
-
     }
