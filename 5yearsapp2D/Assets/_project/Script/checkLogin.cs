@@ -122,16 +122,15 @@ public class checkLogin : MonoBehaviour {
 
     public IEnumerable<System.DateTime> EachYear(System.DateTime from, System.DateTime thru)
     {
-        for (var day = from.Date; day.Date <= thru.Date; day = day.AddYears(1))
+        for (var day = from.Date; day.Date < thru.Date; day = day.AddYears(1))
             yield return day;
     }
 
     public void FillDates()
     {
-        
-            mDatabase2 = FirebaseDatabase.DefaultInstance.GetReference("UserDates");
+
             UserID = PlayerPrefs.GetString("userID");
-            mDatabase2.SetValueAsync(UserID);
+            mDatabase2 = FirebaseDatabase.DefaultInstance.GetReference("/UserDates/");
 
             int i = 0;
             foreach (System.DateTime day in EachDay(System.DateTime.Now, System.DateTime.Now.AddYears(5)))
@@ -144,9 +143,9 @@ public class checkLogin : MonoBehaviour {
 
     public void FillYears()
     {
-        mDatabase4 = FirebaseDatabase.DefaultInstance.GetReference("UserYears");
+
         UserID = PlayerPrefs.GetString("userID");
-        mDatabase4.SetValueAsync(UserID);
+        mDatabase4 = FirebaseDatabase.DefaultInstance.GetReference("/UserYears/");
 
         int i = 0;
         foreach (System.DateTime year in EachYear(System.DateTime.Now, System.DateTime.Now.AddYears(5)))
@@ -179,7 +178,7 @@ public class checkLogin : MonoBehaviour {
             possibleNumbers.RemoveAt(randomNumber);
         }
 
-        for (int years = 1; years < 4; years++)
+        for (int years = 1; years < 6; years++)
         {
             for (int i = 0; i < resultList.Count; i++)
             {
