@@ -11,7 +11,7 @@ public class checkLogin : MonoBehaviour {
 
     public Text LoginF;
     public Text PassF;
-    private DatabaseReference mDatabase, mDatabase2, mDatabase3;
+    private DatabaseReference mDatabase, mDatabase2, mDatabase3, mDatabase4;
     private string Pass;
     private string Login;
     public Button bttn;
@@ -89,6 +89,7 @@ public class checkLogin : MonoBehaviour {
                     {
                         WriteNewUser(LoginF.text, PassF.text, 28, "M");
                         FillDates();
+                        FillYears();
                         AssignQuestionsToDates();
                         PlayerPrefs.SetInt("isAuthenticated", 1);
                         SceneManager.LoadScene("main");
@@ -119,6 +120,12 @@ public class checkLogin : MonoBehaviour {
             yield return day;
     }
 
+    public IEnumerable<System.DateTime> EachYear(System.DateTime from, System.DateTime thru)
+    {
+        for (var day = from.Date; day.Date <= thru.Date; day = day.AddYears(1))
+            yield return day;
+    }
+
     public void FillDates()
     {
         
@@ -135,11 +142,24 @@ public class checkLogin : MonoBehaviour {
 
     }
 
+    public void FillYears()
+    {
+        mDatabase4 = FirebaseDatabase.DefaultInstance.GetReference("UserYears");
+        UserID = PlayerPrefs.GetString("userID");
+        mDatabase4.SetValueAsync(UserID);
+
+        int i = 0;
+        foreach (System.DateTime year in EachYear(System.DateTime.Now, System.DateTime.Now.AddYears(5)))
+        {
+            i++;
+            mDatabase4.Child(UserID).Child(i.ToString()).SetValueAsync(year.ToString("yyyy"));
+        }
+    }
+
     public void AssignQuestionsToDates()
     {
-        mDatabase3 = FirebaseDatabase.DefaultInstance.GetReference("UserDatesQuestions");
+        mDatabase3 = FirebaseDatabase.DefaultInstance.GetReference("QuestionAnswers");
         UserID = PlayerPrefs.GetString("userID");
-        mDatabase3.SetValueAsync(UserID);
 
         int minNumber = 1;
         int maxNumber = 355;
@@ -159,9 +179,24 @@ public class checkLogin : MonoBehaviour {
             possibleNumbers.RemoveAt(randomNumber);
         }
 
-        for (int i = 0; i < resultList.Count; i++)
+        for (int years = 1; years < 4; years++)
         {
-          //  mDatabase3.Child(UserID).Child(i.ToString()).SetValueAsync(day.ToString("ddMMyyyy"));
+            for (int i = 0; i < resultList.Count; i++)
+            {
+                Answer answer = new Answer("", years, (i+1), resultList[i], UserID);
+                string json = JsonUtility.ToJson(answer);
+                DatabaseReference newAnswerID = mDatabase3.Push();
+                newAnswerID.SetRawJsonValueAsync(json);
+
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                Answer answer = new Answer("", years, i+356, 444, UserID);
+                string json = JsonUtility.ToJson(answer);
+                DatabaseReference newAnswerID = mDatabase3.Push();
+                newAnswerID.SetRawJsonValueAsync(json);
+            }
         }
 
     }
