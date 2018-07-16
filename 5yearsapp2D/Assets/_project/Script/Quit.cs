@@ -42,6 +42,7 @@ public class Quit : MonoBehaviour
         yield return new WaitForSeconds(secs);
         GetQuestionID(yrID, dayID);
         yield return new WaitForSeconds(secs);
+        qText.text = "Qtext_ID:"+qTextID;
         if (Convert.ToInt32(qTextID) < 101)
             GetQuestion(qTextID);
         else
@@ -52,6 +53,8 @@ public class Quit : MonoBehaviour
 
     public void GoBack()
     {
+        PlayerPrefs.SetInt("isAuthenticated", 0);
+        PlayerPrefs.SetString("userID", "");
         SceneManager.LoadScene("menu");
     }
 
