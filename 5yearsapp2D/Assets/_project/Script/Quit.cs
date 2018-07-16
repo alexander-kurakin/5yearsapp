@@ -13,16 +13,11 @@ public class Quit : MonoBehaviour
 
     public string UserID, UserName;
     public Text qText, yrText, dayTxt;
-    public string currDay, currYear, currDayFm, qTextT;
+    public string currDay, currYear, currDayFm, qTextT, qTextID;
     public int yrID, dayID;
     public bool finQ1, finQ2;
 
-    private void Awake()
-    {
-        GetQuestion("1");
-    }
-
-    void Start()
+   void Start()
     {
         currDay  = System.DateTime.Now.ToString("ddMMyyyy");
         currYear = System.DateTime.Now.ToString("yyyy");
@@ -35,16 +30,24 @@ public class Quit : MonoBehaviour
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://yearsapp.firebaseio.com/");
         UserID = PlayerPrefs.GetString("userID");
         qText.text = "Loading question ...";
-
-        GetDayID();
-
-        //GetQuestion("1");
+                
+        StartCoroutine(Waiter(2));
 
     }
 
-    IEnumerator Waiter()
+    IEnumerator Waiter(int secs)
     {
-        yield return new WaitForSeconds(2);
+        GetDayID();
+        GetYearID();
+        yield return new WaitForSeconds(secs);
+        GetQuestionID(yrID, dayID);
+        yield return new WaitForSeconds(secs);
+        if (Convert.ToInt32(qTextID) < 101)
+            GetQuestion(qTextID);
+        else
+            qText.text = "Question is on development";
+
+
     }
 
     public void GoBack()
@@ -79,6 +82,32 @@ public class Quit : MonoBehaviour
 
     }
 
+    public void GetQuestionID(int yrID, int dayID)
+    {
+        FirebaseDatabase.DefaultInstance
+            .GetReference("QuestionAnswers")
+            .OrderByChild("username")
+            .GetValueAsync().ContinueWith(task =>
+            {
+                if (task.IsFaulted)
+                    qText.text = "Failed";
+                else if (task.IsCompleted)
+                {
+                    DataSnapshot snapshot = task.Result;
+
+                    foreach (var childSnapshot in snapshot.Children)
+                    {
+                        if (childSnapshot.Child("userID").Value.ToString() == UserID
+                        && childSnapshot.Child("yearID").Value.ToString() == yrID.ToString()
+                        && childSnapshot.Child("dateID").Value.ToString() == dayID.ToString())
+                            qTextID = childSnapshot.Child("questionID").Value.ToString();
+                    }
+                }
+
+            }
+            );
+    }
+
     public void GetQuestion(string questionID)
     {
         FirebaseDatabase.DefaultInstance
@@ -97,16 +126,16 @@ public class Quit : MonoBehaviour
 
                          foreach (var childSnapshot in snapshot.Children)
                          {
-                             qTextT = childSnapshot.Value.ToString();
+                             qText.text = childSnapshot.Value.ToString();
                          }
                      }
                  });
 
     }
 
-    public int GetYearID()
+    public void GetYearID()
     {
-       FirebaseDatabase.DefaultInstance
+      FirebaseDatabase.DefaultInstance
       .GetReference("UserYears")
       .Child(UserID)
       .OrderByValue()
@@ -124,18 +153,16 @@ public class Quit : MonoBehaviour
               foreach (DataSnapshot dataSnap in snapshot.Children)
               {
                   yrID = Convert.ToInt32(dataSnap.Key.ToString());
-                                
               }
-              finQ1 = true;
+
           }
       });
 
-        return yrID;
     }
 
-    public async void GetDayID()
+    public void GetDayID()
     {
-       await FirebaseDatabase.DefaultInstance
+       FirebaseDatabase.DefaultInstance
        .GetReference("UserDates")
        .Child(UserID)
        .OrderByValue()
@@ -156,7 +183,6 @@ public class Quit : MonoBehaviour
                {
                    dayID = Convert.ToInt32(dataSnap.Key.ToString());
                }
-               Debug.Log(dayID);
            }
        });
     }
