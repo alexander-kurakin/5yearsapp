@@ -36,6 +36,9 @@ public class FormManager : MonoBehaviour {
     public void OnLogin() {
         Debug.Log("Login");
         authManager.LoginAttempt(LoginInput.text, PassInput.text);
+        //FillDates();
+        //FillYears();
+        //AssignQuestionsToDates();
     }
 
     private void ToggleButtonState(bool toState) {

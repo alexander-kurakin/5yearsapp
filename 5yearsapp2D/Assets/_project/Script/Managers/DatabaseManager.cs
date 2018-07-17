@@ -18,11 +18,7 @@ public class DatabaseManager : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
 
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://yearsapp.firebaseio.com/");
-        Debug.Log(Router.Users());
+       // Debug.Log(Router.Users());
     }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

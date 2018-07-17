@@ -81,10 +81,8 @@ public class AuthManager : MonoBehaviour {
                     else
                     {
                         WriteNewUser(LoginF, PassF, 28, "M");
-                        formManager.UpdateStatus("Created new user with login:" + LoginF);
-                        //FillDates();
-                        //FillYears();
-                        //AssignQuestionsToDates();
+                        formManager.UpdateStatus("Created new user with login: " + LoginF);
+
                         PlayerPrefs.SetInt("isAuthenticated", 1);
                        // SceneManager.LoadScene("main");
                     }
