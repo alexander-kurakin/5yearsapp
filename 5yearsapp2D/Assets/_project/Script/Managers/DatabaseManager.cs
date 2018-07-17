@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Firebase;
+using Firebase.Database;
+using Firebase.Unity.Editor;
 
 public class DatabaseManager : MonoBehaviour {
 
@@ -13,7 +16,10 @@ public class DatabaseManager : MonoBehaviour {
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
-	}
+
+        FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://yearsapp.firebaseio.com/");
+        Debug.Log(Router.Users());
+    }
 	
 	// Update is called once per frame
 	void Update () {
